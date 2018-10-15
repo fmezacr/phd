@@ -1,3 +1,7 @@
+from sunpy.net import Fido, attrs as a
+from sunpy.time import TimeRange
+from sunpy.timeseries import TimeSeries
+import astropy.units as u
 import cv2 as cv
 import numpy as np
 import math
@@ -5,8 +9,11 @@ import glob
 import os
 import matplotlib.pyplot as plt
 from astropy.io import fits
-import sunpy
 import sunpy.map
+
+def returnDataRange(centralDate, delta_date):
+
+
 
 # Funcion que retorna el centro del disco solar de la imagen FITS,
 # las coordenadas son los tags CRPIX1 y CRPIX2 contenidos en el header.
