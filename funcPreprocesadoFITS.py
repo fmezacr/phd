@@ -1,5 +1,5 @@
 from sunpy.net import Fido, attrs as a
-from sunpy.time import TimeRange
+from sunpy.time import TimeRange, parse_time
 from sunpy.timeseries import TimeSeries
 import astropy.units as u
 import cv2 as cv
@@ -11,9 +11,15 @@ import matplotlib.pyplot as plt
 from astropy.io import fits
 import sunpy.map
 
-def returnDataRange(centralDate, delta_date):
+# Funcion que retorna un intervalo de fechas correspondiente
+# a una fecha central +/- un delta en minutos.
+# Es decir (centralDate - delta_min , centralDate + delta_min)
+# El intervalo de fechas se retorna como un objeto de tipo TimeRange
+def returnDataRange(centralDate, delta_min):
+    date_rangeUp = TimeRange(centralDate, delta_min * u.min).previous()
+    date_rangeFinal = TimeRange(date_rangeUp.start, date_rangeUp.next().end)
 
-
+    return date_rangeFinal
 
 # Funcion que retorna el centro del disco solar de la imagen FITS,
 # las coordenadas son los tags CRPIX1 y CRPIX2 contenidos en el header.
@@ -76,6 +82,18 @@ def main():
     radioSol = getSunRadious(sunImageFile[1])
     print centroSol
     print radioSol
+
+    # Pruebas funcion returnDataRange
+    fechaC1 = '2018/06/26 07:40'
+    delta1 = 20
+    fechaC2 = '2010/03/04 00:00'
+    delta2 = 10
+
+    inter1 = returnDataRange(fechaC1, delta1)
+    inter2 = returnDataRange(fechaC2, delta2)
+
+    print(inter1)
+    print(inter2)
 
 #    print(sunImageFile[1].header)
 #    imageSunData = getHDUListData(sunImageFile[1])
