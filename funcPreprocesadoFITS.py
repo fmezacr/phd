@@ -8,8 +8,12 @@ import math
 import glob
 import os
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
+from mpl_toolkits.mplot3d import Axes3D
+from skimage.feature import peak_local_max
 from astropy.io import fits
 import sunpy.map
+from sunpy.data.sample import AIA_193_IMAGE
 
 # Funcion que retorna un intervalo de fechas correspondiente
 # a una fecha central +/- un delta en minutos.
@@ -18,8 +22,12 @@ import sunpy.map
 def returnDataRange(centralDate, delta_min):
     date_rangeUp = TimeRange(centralDate, delta_min * u.min).previous()
     date_rangeFinal = TimeRange(date_rangeUp.start, date_rangeUp.next().end)
-
     return date_rangeFinal
+
+def peakLocalMax(aiaMapData, pixDist, threshold):
+    peakCoordinates = peak_local_max(aiaMapData, min_distance= pixDist, threshold_rel= threshold)
+    return peakCoordinates
+
 
 # Funcion que retorna el centro del disco solar de la imagen FITS,
 # las coordenadas son los tags CRPIX1 y CRPIX2 contenidos en el header.
@@ -66,13 +74,20 @@ def image255bitsTransformation(sunImageData, offset, maxData):
 # The main() function
 def main():
     # Se abre la imagen usando Astropy
-    fits_image_filename = 'ImagenesFITS/aia.lev1_euv_12s.2012-02-07T032009Z.193.image_lev1.fits'
+    fits_image_filename = 'JSOC_AIA_FITS/aia.lev1_euv_12s.2011-06-07T074513Z.171.image_lev1.fits'
     sunImageFile = fits.open(fits_image_filename)
 
-    sunImageFile.verify('fix')
+#    goesFits = fits.open('go1520110607.fits')
+#    print(goesFits)
+
     # Se muestra el disco solar usando la libreria sunpy
     aiamap = sunpy.map.Map(fits_image_filename)
-    print aiamap
+    aiamapSample = sunpy.map.Map(AIA_193_IMAGE)
+
+
+    peakCoord = peakLocalMax(aiamapSample.data, 60, 0.5)
+    print peakCoord
+
     plt.figure()
     aiamap.plot()
     plt.show()
@@ -103,6 +118,6 @@ def main():
 #    sunImageRead5 = cv.imread("ImageSunOut.png", -1)
 
     sunImageFile.close()    # Funcion de astropy para cerrar FITS y liberar memoria
-
+#    goesFits.close()
 if __name__ == '__main__':
     main()
