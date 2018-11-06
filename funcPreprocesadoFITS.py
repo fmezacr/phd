@@ -74,7 +74,7 @@ def image255bitsTransformation(sunImageData, offset, maxData):
 # The main() function
 def main():
     # Se abre la imagen usando Astropy
-    fits_image_filename = 'JSOC_AIA_FITS/aia.lev1_euv_12s.2011-06-07T074513Z.171.image_lev1.fits'
+    fits_image_filename = '/home/yasser/Documents/DatosJupyterSun/JSOC_AIA_FITS/aia.lev1_euv_12s.2011-06-07T070133Z.193.image_lev1.fits'
     sunImageFile = fits.open(fits_image_filename)
 
 #    goesFits = fits.open('go1520110607.fits')
